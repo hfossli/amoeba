@@ -1,0 +1,24 @@
+{
+  "name": "amoeba",
+  "version": "0.1",
+  "summary": "Cassowary constraint solver",
+  "homepage": "https://github.com/hfossli/amoeba",
+  "license": "MIT",
+  "platforms": {
+    "ios": "8.0",
+    "osx": "10.8"
+  },
+  "requires_arc": true,
+  "authors": {
+    "Xavier Wang": "weasley.wx@gmail.com",
+    "Håvard Fossli": "hfossli@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/hfossli/amoeba.git",
+    "tag": "0.1"
+  },
+  "source_files": [
+    "amoeba.h",
+    "Swift/Source/**/*"
+  ]
+}

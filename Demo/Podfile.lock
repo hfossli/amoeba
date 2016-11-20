@@ -1,0 +1,16 @@
+PODS:
+  - amoeba (0.1)
+
+DEPENDENCIES:
+  - amoeba (from `../`)
+
+EXTERNAL SOURCES:
+  amoeba:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  amoeba: df986b9342926ed1c78692eeb177fbb21a37afcc
+
+PODFILE CHECKSUM: 5f89f43621e2f43829b999d861b748f0a338bad8
+
+COCOAPODS: 1.1.1
