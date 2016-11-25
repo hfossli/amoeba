@@ -24,6 +24,10 @@ public class Term: UniqueId {
     }
     
     public func inverted() -> Term {
+        return Term(variable, 1.0 / multiplier)
+    }
+    
+    public func flipped() -> Term {
         return multiplied(-1.0)
     }
     
@@ -37,3 +41,4 @@ public class Term: UniqueId {
         return true
     }
 }
+

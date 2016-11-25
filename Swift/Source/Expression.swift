@@ -28,13 +28,35 @@ public class Expression: UniqueId {
         add(constant)
     }
     
+    public func flipped() -> Expression {
+        let expr = Expression()
+        for term in terms {
+            expr.add(term.flipped())
+        }
+        for constant in constants {
+            expr.add(-constant)
+        }
+        return expr
+    }
+    
     public func inverted() -> Expression {
         let expr = Expression()
         for term in terms {
             expr.add(term.inverted())
         }
         for constant in constants {
-            expr.add(-constant)
+            expr.add(1.0 / constant)
+        }
+        return expr
+    }
+    
+    public func multiplied(_ factor: Double) -> Expression {
+        let expr = Expression()
+        for term in terms {
+            expr.add(term.multiplied(factor))
+        }
+        for constant in constants {
+            expr.add(constant * factor)
         }
         return expr
     }

@@ -19,7 +19,7 @@ public class Constraint: UniqueId {
     public init(_ lhs: Expression, _ relation: Relation, _ rhs: Expression) {
         self.relation = relation
         expressions.append(lhs)
-        expressions.append(rhs.inverted())
+        expressions.append(rhs.flipped())
     }
     
     internal func equals(_ other: Constraint) -> Bool {

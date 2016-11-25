@@ -14,6 +14,7 @@
 		4C70AC151DDF87500084220A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C70AC141DDF87500084220A /* Assets.xcassets */; };
 		4C70AC181DDF87500084220A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C70AC161DDF87500084220A /* LaunchScreen.storyboard */; };
 		4C70AC231DDF87500084220A /* DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C70AC221DDF87500084220A /* DemoTests.swift */; };
+		4CED5F3D1DE2D95C003015A5 /* Foo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CED5F3C1DE2D95C003015A5 /* Foo.m */; };
 		8EEDC413FE34938332696B88 /* Pods_Demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7737ACBF39C9D33DCFAE379 /* Pods_Demo.framework */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,9 @@
 		4C70AC1E1DDF87500084220A /* DemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C70AC221DDF87500084220A /* DemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoTests.swift; sourceTree = "<group>"; };
 		4C70AC241DDF87500084220A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4CED5F3A1DE2D95C003015A5 /* Demo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Demo-Bridging-Header.h"; sourceTree = "<group>"; };
+		4CED5F3B1DE2D95C003015A5 /* Foo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Foo.h; sourceTree = "<group>"; };
+		4CED5F3C1DE2D95C003015A5 /* Foo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Foo.m; sourceTree = "<group>"; };
 		9DA972724AECCC57C4768450 /* Pods-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Demo/Pods-Demo.release.xcconfig"; sourceTree = "<group>"; };
 		F7737ACBF39C9D33DCFAE379 /* Pods_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -98,10 +102,13 @@
 			children = (
 				4C70AC0D1DDF87500084220A /* AppDelegate.swift */,
 				4C70AC0F1DDF87500084220A /* ViewController.swift */,
+				4CED5F3B1DE2D95C003015A5 /* Foo.h */,
+				4CED5F3C1DE2D95C003015A5 /* Foo.m */,
 				4C70AC111DDF87500084220A /* Main.storyboard */,
 				4C70AC141DDF87500084220A /* Assets.xcassets */,
 				4C70AC161DDF87500084220A /* LaunchScreen.storyboard */,
 				4C70AC191DDF87500084220A /* Info.plist */,
+				4CED5F3A1DE2D95C003015A5 /* Demo-Bridging-Header.h */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -185,6 +192,7 @@
 				TargetAttributes = {
 					4C70AC091DDF87500084220A = {
 						CreatedOnToolsVersion = 8.1;
+						LastSwiftMigration = 0810;
 						ProvisioningStyle = Automatic;
 					};
 					4C70AC1D1DDF87500084220A = {
@@ -286,6 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CED5F3D1DE2D95C003015A5 /* Foo.m in Sources */,
 				4C70AC101DDF87500084220A /* ViewController.swift in Sources */,
 				4C70AC0E1DDF87500084220A /* AppDelegate.swift in Sources */,
 			);
@@ -428,10 +437,13 @@
 			baseConfigurationReference = 4067DA0C2E82D2F4F0A97428 /* Pods-Demo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.acme.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Demo/Demo-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -441,10 +453,12 @@
 			baseConfigurationReference = 9DA972724AECCC57C4768450 /* Pods-Demo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.acme.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Demo/Demo-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

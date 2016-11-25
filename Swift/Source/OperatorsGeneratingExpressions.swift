@@ -6,6 +6,16 @@
 //
 //
 
+// expression
+
+public prefix func -(expr: Expression) -> Expression {
+    return expr.flipped()
+}
+
+public prefix func +(expr: Expression) -> Expression {
+    return expr
+}
+
 // expression & expression
 
 public func +(lhs: Expression, rhs: Expression) -> Expression {
@@ -18,7 +28,7 @@ public func +(lhs: Expression, rhs: Expression) -> Expression {
 public func -(lhs: Expression, rhs: Expression) -> Expression {
     let expr = Expression()
     expr.add(lhs)
-    expr.add(rhs.inverted())
+    expr.add(rhs.flipped())
     return expr
 }
 
@@ -41,14 +51,14 @@ public func +(lhs: Expression, rhs: Term) -> Expression {
 public func -(lhs: Term, rhs: Expression) -> Expression {
     let expr = Expression()
     expr.add(lhs)
-    expr.add(rhs.inverted())
+    expr.add(rhs.flipped())
     return expr
 }
 
 public func -(lhs: Expression, rhs: Term) -> Expression {
     let expr = Expression()
     expr.add(lhs)
-    expr.add(rhs.inverted())
+    expr.add(rhs.flipped())
     return expr
 }
 
@@ -71,7 +81,7 @@ public func +(lhs: Expression, rhs: Variable) -> Expression {
 public func -(lhs: Variable, rhs: Expression) -> Expression {
     let expr = Expression()
     expr.add(lhs)
-    expr.add(rhs.inverted())
+    expr.add(rhs.flipped())
     return expr
 }
 
@@ -86,6 +96,56 @@ public func -(lhs: Expression, rhs: Variable) -> Expression {
 
 public func +(lhs: Term, rhs: Term) -> Expression {
     return Expression(lhs) + Expression(rhs)
+}
+
+public func -(lhs: Term, rhs: Term) -> Expression {
+    return lhs + -rhs
+}
+
+// double & expression
+
+public func +(lhs: Expression, rhs: Double) -> Expression {
+    let expr = Expression()
+    expr.add(lhs)
+    expr.add(rhs)
+    return expr
+}
+
+public func +(lhs: Double, rhs: Expression) -> Expression {
+    let expr = Expression()
+    expr.add(lhs)
+    expr.add(rhs)
+    return expr
+}
+
+public func -(lhs: Expression, rhs: Double) -> Expression {
+    let expr = Expression()
+    expr.add(lhs)
+    expr.add(-rhs)
+    return expr
+}
+
+public func -(lhs: Double, rhs: Expression) -> Expression {
+    let expr = Expression()
+    expr.add(lhs)
+    expr.add(-rhs)
+    return expr
+}
+
+public func *(lhs: Expression, rhs: Double) -> Expression {
+    return lhs.multiplied(rhs)
+}
+
+public func *(lhs: Double, rhs: Expression) -> Expression {
+    return rhs.multiplied(lhs)
+}
+
+public func /(lhs: Expression, rhs: Double) -> Expression {
+    return lhs.multiplied(1.0/rhs)
+}
+
+public func /(lhs: Double, rhs: Expression) -> Expression {
+    return rhs.inverted().multiplied(lhs)
 }
 
 // double & term
@@ -103,23 +163,46 @@ public func +(lhs: Double, rhs: Term) -> Expression {
 }
 
 public func -(lhs: Term, rhs: Double) -> Expression {
-    return rhs + -lhs
+    return lhs + -rhs
 }
 
 public func -(lhs: Double, rhs: Term) -> Expression {
-    let expr = Expression()
-    expr.add(lhs)
-    expr.add(rhs.inverted())
+    return lhs + -rhs
+}
+
+// variable & term
+
+public func +(lhs: Term, rhs: Variable) -> Expression {
+    let expr = Expression(lhs)
+    expr.add(rhs)
     return expr
+}
+
+public func +(lhs: Variable, rhs: Term) -> Expression {
+    let expr = Expression(lhs)
+    expr.add(rhs)
+    return expr
+}
+
+public func -(lhs: Term, rhs: Variable) -> Expression {
+    return lhs + -rhs
+}
+
+public func -(lhs: Variable, rhs: Term) -> Expression {
+    return lhs + -rhs
 }
 
 // variable & variable
 
-public func +(lhs: Variable, rhs: Variable) -> Expression {
+public func -(lhs: Variable, rhs: Variable) -> Expression {
     let expr = Expression()
     expr.add(lhs)
-    expr.add(rhs)
+    expr.add(-rhs)
     return expr
+}
+
+public func +(lhs: Variable, rhs: Variable) -> Expression {
+    return lhs + -rhs
 }
 
 // double & variable

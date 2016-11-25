@@ -8,11 +8,11 @@
 
 
 public prefix func -(variable: Variable) -> Term {
-    return Term(variable).inverted()
+    return Term(variable).flipped()
 }
 
 public prefix func -(term: Term) -> Term {
-    return term.inverted()
+    return term.flipped()
 }
 
 public prefix func +(term: Term) -> Term {

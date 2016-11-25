@@ -21,17 +21,27 @@ public class Solver {
         if result != AM_OK {
             throw AmoebaError.fromUnderlying(result)
         }
+        copyValues()
     }
     
     public func remove(_ constraint: Constraint) throws {
         let underlying = self.underlying(constraint: constraint)
         am_remove(underlying)
+        copyValues()
         // todo: throw if not found
     }
     
     public func value(_ variable: Variable) -> Double {
         let underlying = self.underlying(variable: variable)
         return am_value(underlying)
+    }
+    
+    private func copyValues() {
+        variableMap.forEach { (overlying, underlying) in
+            if (overlying.item.value != underlying.value) {
+                overlying.item.value = underlying.value
+            }
+        }
     }
     
     private func createConstraint(_ constraint: Constraint) -> am_ConstraintRef {
