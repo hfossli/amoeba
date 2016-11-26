@@ -12,32 +12,24 @@ public class Constraint: UniqueId {
     public var strength: Double = Strength.required
     
     private static var index: Int32 = 0
-    internal let id: Int = Int(OSAtomicIncrement32(&Constraint.index))
+    public let id: Int = Int(OSAtomicIncrement32(&Constraint.index))
     
-    internal var expressions: [Expression] = []
+    public let expression: Expression
     
     public init(_ lhs: Expression, _ relation: Relation, _ rhs: Expression) {
         self.relation = relation
-        expressions.append(lhs)
-        expressions.append(rhs.flipped())
+        self.expression = lhs.added(rhs.flipped())
     }
     
-    internal func equals(_ other: Constraint) -> Bool {
+    public func equals(_ other: Constraint) -> Bool {
         if relation != other.relation {
             return false
         }
         if strength != other.strength {
             return false
         }
-        if expressions.count != other.expressions.count {
+        if !expression.equals(other.expression) {
             return false
-        }
-        
-        for (index, expression) in expressions.enumerated() {
-            let otherExpression = other.expressions[index]
-            if !expression.equals(otherExpression) {
-                return false
-            }
         }
         return true
     }

@@ -8,11 +8,11 @@
 
 public class Term: UniqueId {
 
-    let variable: Variable
-    let multiplier: Double
+    public let variable: Variable
+    public let multiplier: Double
     
     private static var index: Int32 = 0
-    internal let id: Int = Int(OSAtomicIncrement32(&Term.index))
+    public let id: Int = Int(OSAtomicIncrement32(&Term.index))
     
     public init(_ variable: Variable, _ multiplier: Double = 1.0) {
         self.variable = variable
@@ -31,7 +31,7 @@ public class Term: UniqueId {
         return multiplied(-1.0)
     }
     
-    internal func equals(_ other: Term) -> Bool {
+    public func equals(_ other: Term) -> Bool {
         if multiplier != other.multiplier {
             return false
         }

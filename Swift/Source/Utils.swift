@@ -6,12 +6,12 @@
 //
 //
 
-protocol UniqueId {
+public protocol UniqueId {
     var id: Int { get }
     func equals(_ other: Self) -> Bool
 }
 
-internal class Wrapper<T: UniqueId> : Hashable, Equatable {
+public final class Wrapper<T: UniqueId> : Hashable, Equatable {
     
     let item: T
     
@@ -19,7 +19,7 @@ internal class Wrapper<T: UniqueId> : Hashable, Equatable {
         self.item = item
     }
     
-    var hashValue: Int {
+    public var hashValue: Int {
         return item.id
     }
     

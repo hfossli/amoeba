@@ -7,14 +7,18 @@
 //
 
 import XCTest
-import amoeba
+@testable import amoeba
 
 class OperatorsTest: XCTestCase {
     
     func testBasics() {
-        let solver = Solver()
-        let v = Variable()
-        try solver.add(constraint: v + 2)
+        do {
+            let solver = Solver()
+            let v = Variable()
+            try solver.add(v + 2 == 0)
+        } catch let error {
+            XCTFail("Unexpected error \(error)")
+        }
     }
     
 }

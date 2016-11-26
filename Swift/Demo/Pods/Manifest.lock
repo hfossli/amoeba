@@ -2,15 +2,17 @@ PODS:
   - amoeba (0.1)
 
 DEPENDENCIES:
-  - amoeba (from `../`)
+  - amoeba (from `../../`)
 
 EXTERNAL SOURCES:
   amoeba:
-    :path: "../"
+    :path: "../../"
+
+CHECKOUT OPTIONS: 
 
 SPEC CHECKSUMS:
   amoeba: df986b9342926ed1c78692eeb177fbb21a37afcc
 
-PODFILE CHECKSUM: 5f89f43621e2f43829b999d861b748f0a338bad8
-
 COCOAPODS: 1.1.1
+
+PODFILE CHECKSUM: 79bd4098dd86e72a65f6d0b74736993fe6b0efcc

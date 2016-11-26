@@ -1,61 +1,125 @@
 
+public enum SolverError: Error {
+    case notFound
+}
 
-
-public class Solver {
+public final class Solver {
     
+    private static var index: Int32 = 0
+    public let id: Int = Int(OSAtomicIncrement32(&Solver.index))
     private let solver: am_SolverRef
+    private let debug: Bool
     private var constraintsMap: [Wrapper<Constraint>: am_ConstraintRef] = [:]
     private var variableMap: [Wrapper<Variable>: am_VariableRef] = [:]
+    private var observers: [Wrapper<Variable>:Observer<(Double) -> Void>] = [:]
+    private var values: [Wrapper<Variable>:Double] = [:]
+    private var actions: [String] = []
     
-    public init() {
-        solver = am_newsolver(nil, nil)
+    public init(debug: Bool = false) {
+        self.debug = debug
+        self.actions = ["am_Solver *s\(id) = am_newsolver(nil, nil)"]
+        self.solver = am_newsolver(nil, nil)
     }
     
     deinit {
+        log("am_delsolver(s\(id))")
         am_delsolver(solver)
     }
     
     public func add(_ constraint: Constraint) throws {
         let underlying = self.underlying(constraint: constraint)
+        log("am_add(c\(constraint.id))")
         let result = am_add(underlying)
+        cacheAndCallObservers()
         if result != AM_OK {
             throw AmoebaError.fromUnderlying(result)
         }
-        copyValues()
     }
     
     public func remove(_ constraint: Constraint) throws {
         let underlying = self.underlying(constraint: constraint)
+        log("am_remove(c\(constraint.id))")
         am_remove(underlying)
-        copyValues()
-        // todo: throw if not found
+        cacheAndCallObservers()
     }
     
-    public func value(_ variable: Variable) -> Double {
-        let underlying = self.underlying(variable: variable)
+    public func value(_ variable: Variable) throws -> Double {
+        let underlying = try self.underlying(variable: variable)
+        log("am_value(v\(variable.id))")
         return am_value(underlying)
     }
     
-    private func copyValues() {
-        variableMap.forEach { (overlying, underlying) in
-            if (overlying.item.value != underlying.value) {
-                overlying.item.value = underlying.value
+    public func observe(_ variable: Variable, _ closure: @escaping (Double) -> Void) -> Int {
+        let key = Wrapper(variable)
+        if let observer = observers[key] {
+            return observer.add(closure)
+        } else {
+            let observer = Observer<(Double) -> Void>()
+            observers[key] = observer
+            return observer.add(closure)
+        }
+    }
+    
+    public func stopObserve(_ variable: Variable, observerId: Int) throws {
+        let key = Wrapper(variable)
+        guard let observer = observers[key] else {
+            throw SolverError.notFound
+        }
+        try observer.remove(observerId)
+    }
+    
+    private func cacheAndCallObservers() {
+        let changes = cacheValues()
+        callObservers(changes: changes)
+    }
+    
+    private func cacheValues() -> [Wrapper<Variable>:Double] {
+        var changed: [Wrapper<Variable>:Double] = [:]
+        let cache = values
+        cache.forEach { (overlying, value) in
+            if let underlying = try? self.underlying(variable: overlying.item, autocreate: false) {
+                if value != underlying.value {
+                    changed[overlying] = value
+                }
+            }
+        }
+        return changed
+    }
+    
+    private func callObservers(changes: [Wrapper<Variable>:Double]) {
+        changes.forEach { (wrapper, newValue) in
+            if let observer = observers[wrapper] {
+                observer.items.forEach { (id, closure) in
+                    closure(newValue)
+                }
             }
         }
     }
     
+    public func variablesAndValues() -> [Wrapper<Variable>:Double] {
+        return values
+    }
+    
     private func createConstraint(_ constraint: Constraint) -> am_ConstraintRef {
+        
+        log("am_Constraint *c\(constraint.id) = am_newconstraint(s\(id), \(constraint.strength))")
         let underlying = am_newconstraint(solver, constraint.strength)!
+        
+        log("am_setstrength(c\(constraint.id), \(constraint.strength))")
         am_setstrength(underlying, constraint.strength)
+        
+        log("am_setrelation(c\(constraint.id), \(constraint.relation.underlying()))")
         am_setrelation(underlying, constraint.relation.underlying())
-        for expression in constraint.expressions {
-            for term in expression.terms {
-                let variable = self.underlying(variable: term.variable)
-                am_addterm(underlying, variable, term.multiplier)
-            }
-            for constant in expression.constants {
-                am_addconstant(underlying, constant)
-            }
+        
+        for term in constraint.expression.terms {
+            let variable = try! self.underlying(variable: term.variable)
+            
+            log("am_addterm(c\(constraint.id), v\(term.variable.id), \(term.multiplier))")
+            am_addterm(underlying, variable, term.multiplier)
+        }
+        for constant in constraint.expression.constants {
+            log("am_addconstant(c\(constraint.id), \(constant))")
+            am_addconstant(underlying, constant)
         }
         return underlying
     }
@@ -76,11 +140,17 @@ public class Solver {
         return overlying!.key.item
     }
     
-    private func underlying(variable: Variable) -> am_VariableRef {
+    private func underlying(variable: Variable, autocreate: Bool = true) throws -> am_VariableRef {
         if let underlying = variableMap[Wrapper(variable)] {
             return underlying
         }
+        guard autocreate else {
+            throw AmoebaError.failed
+        }
+        
+        log("am_Variable *v\(variable.id) = am_newvariable(s\(id))")
         let underlying = am_newvariable(solver)!
+        
         variableMap[Wrapper(variable)] = underlying
         return underlying
     }
@@ -90,6 +160,14 @@ public class Solver {
             return underlying == variable
         }
         return overlying!.key.item
+    }
+    
+    private func log(_ action: String) {
+        actions.append(action)
+    }
+    
+    public func allActions() -> [String] {
+        return actions
     }
 }
 

@@ -9,90 +9,105 @@
 public class Expression: UniqueId {
     
     private static var index: Int32 = 0
-    internal let id: Int = Int(OSAtomicIncrement32(&Expression.index))
+    public let id: Int = Int(OSAtomicIncrement32(&Expression.index))
     
-    internal var terms: [Term] = []
-    internal var constants: [Double] = []
+    public let terms: [Term]
+    public let constants: [Double]
     
-    public init() {}
+    public init() {
+        self.terms = []
+        self.constants = []
+    }
+    
+    public init(terms: [Term] = [], constants: [Double] = []) {
+        self.terms = terms
+        self.constants = constants
+    }
     
     public init(_ term: Term) {
-        add(term)
+        self.terms = [term]
+        self.constants = []
     }
     
     public init(_ variable: Variable) {
-        add(Term(variable))
+        self.terms = [Term(variable)]
+        self.constants = []
     }
     
     public init(_ constant: Double) {
-        add(constant)
+        self.terms = []
+        self.constants = [constant]
     }
     
     public func flipped() -> Expression {
-        let expr = Expression()
-        for term in terms {
-            expr.add(term.flipped())
+        var terms:[Term] = []
+        for term in self.terms {
+            terms.append(term.flipped())
         }
-        for constant in constants {
-            expr.add(-constant)
+        var constants:[Double] = []
+        for constant in self.constants {
+            constants.append(-constant)
         }
-        return expr
+        return Expression(terms: terms, constants: constants)
     }
     
     public func inverted() -> Expression {
-        let expr = Expression()
-        for term in terms {
-            expr.add(term.inverted())
+        var terms:[Term] = []
+        for term in self.terms {
+            terms.append(term.inverted())
         }
-        for constant in constants {
-            expr.add(1.0 / constant)
+        var constants:[Double] = []
+        for constant in self.constants {
+            constants.append(1.0 / constant)
         }
-        return expr
+        return Expression(terms: terms, constants: constants)
     }
     
     public func multiplied(_ factor: Double) -> Expression {
-        let expr = Expression()
-        for term in terms {
-            expr.add(term.multiplied(factor))
+        var terms:[Term] = []
+        for term in self.terms {
+            terms.append(term.multiplied(factor))
         }
-        for constant in constants {
-            expr.add(constant * factor)
+        var constants:[Double] = []
+        for constant in self.constants {
+            constants.append(constant * factor)
         }
-        return expr
+        return Expression(terms: terms, constants: constants)
     }
     
-    public func add(_ expression: Expression) {
-        terms.append(contentsOf: terms)
-        constants.append(contentsOf: constants)
+    public func added(_ expression: Expression) -> Expression {
+        return Expression(terms: terms + expression.terms, constants: constants + expression.constants)
     }
     
-    public func add(_ term: Term) {
-        terms.append(term)
+    public func added(_ term: Term) -> Expression {
+        return Expression(terms: [term] + terms, constants: constants)
     }
     
-    public func add(_ variable: Variable) {
-        terms.append(Term(variable))
+    public func added(_ variable: Variable) -> Expression {
+        return Expression(terms: [Term(variable)] + terms, constants: constants)
     }
     
-    public func add(_ constant: Double) {
-        constants.append(constant)
+    public func added(_ constant: Double) -> Expression {
+        return Expression(terms: terms, constants: constants + [constant])
     }
     
-    public func add(_ terms: [Term]) {
-        self.terms.append(contentsOf: terms)
+    public func added(_ terms: [Term]) -> Expression {
+        return Expression(terms: terms + terms, constants: constants)
     }
     
-    public func add(_ variables: [Variable]) {
+    public func added(_ variables: [Variable]) -> Expression {
+        var terms:[Term] = []
         for variable in variables {
-            add(variable)
+            terms.append(Term(variable))
         }
+        return added(terms)
     }
     
-    public func add(_ constants: [Double]) {
-        self.constants.append(contentsOf: constants)
+    public func added(_ constants: [Double]) -> Expression {
+        return Expression(terms: terms, constants: constants + constants)
     }
     
-    internal func equals(_ other: Expression) -> Bool {
+    public func equals(_ other: Expression) -> Bool {
         
         if constants.count != other.constants.count {
             return false

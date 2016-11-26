@@ -34,8 +34,8 @@ class ViewController: UIViewController {
             try solver.add(v1 / 2 == v2)
             try solver.add(v1 + v1 - v1 == 8)
             print("----")
-            print("value of v1: \(solver.value(v1))")
-            print("value of v2: \(solver.value(v2))")
+            print("value of v1: \(try solver.value(v1))")
+            print("value of v2: \(try solver.value(v2))")
         } catch let error {
             print("Error \(error)")
         }
