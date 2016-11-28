@@ -12,12 +12,13 @@ import XCTest
 class OperatorsTest: XCTestCase {
     
     func testBasics() {
+        let solver = Solver(debug: true)
         do {
-            let solver = Solver()
             let v = Variable()
             try solver.add(v + 2 == 0)
         } catch let error {
             XCTFail("Unexpected error \(error)")
+            print("\(solver.allActions().joined(separator: ";\n"))")
         }
     }
     

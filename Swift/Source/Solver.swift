@@ -22,14 +22,16 @@ public final class Solver {
     }
     
     deinit {
-        log("am_delsolver(s\(id))")
+        if debug { log("am_delsolver(s\(id))") }
         am_delsolver(solver)
     }
-    
+                                                                                
     public func add(_ constraint: Constraint) throws {
         let underlying = self.underlying(constraint: constraint)
-        log("am_add(c\(constraint.id))")
+        
+        if debug { log("am_add(c\(constraint.id))") }
         let result = am_add(underlying)
+        
         cacheAndCallObservers()
         if result != AM_OK {
             throw AmoebaError.fromUnderlying(result)
@@ -38,14 +40,14 @@ public final class Solver {
     
     public func remove(_ constraint: Constraint) throws {
         let underlying = self.underlying(constraint: constraint)
-        log("am_remove(c\(constraint.id))")
+        if debug { log("am_remove(c\(constraint.id))") }
         am_remove(underlying)
         cacheAndCallObservers()
     }
     
     public func value(_ variable: Variable) throws -> Double {
         let underlying = try self.underlying(variable: variable)
-        log("am_value(v\(variable.id))")
+        if debug { log("am_value(v\(variable.id))") }
         return am_value(underlying)
     }
     
@@ -102,23 +104,23 @@ public final class Solver {
     
     private func createConstraint(_ constraint: Constraint) -> am_ConstraintRef {
         
-        log("am_Constraint *c\(constraint.id) = am_newconstraint(s\(id), \(constraint.strength))")
+        if debug { log("am_Constraint *c\(constraint.id) = am_newconstraint(s\(id), \(constraint.strength))") }
         let underlying = am_newconstraint(solver, constraint.strength)!
         
-        log("am_setstrength(c\(constraint.id), \(constraint.strength))")
+        if debug { log("am_setstrength(c\(constraint.id), \(constraint.strength))") }
         am_setstrength(underlying, constraint.strength)
         
-        log("am_setrelation(c\(constraint.id), \(constraint.relation.underlying()))")
+        if debug { log("am_setrelation(c\(constraint.id), \(constraint.relation.underlying()))") }
         am_setrelation(underlying, constraint.relation.underlying())
         
         for term in constraint.expression.terms {
             let variable = try! self.underlying(variable: term.variable)
             
-            log("am_addterm(c\(constraint.id), v\(term.variable.id), \(term.multiplier))")
+            if debug { log("am_addterm(c\(constraint.id), v\(term.variable.id), \(term.multiplier))") }
             am_addterm(underlying, variable, term.multiplier)
         }
         for constant in constraint.expression.constants {
-            log("am_addconstant(c\(constraint.id), \(constant))")
+            if debug { log("am_addconstant(c\(constraint.id), \(constant))") }
             am_addconstant(underlying, constant)
         }
         return underlying
@@ -148,7 +150,7 @@ public final class Solver {
             throw AmoebaError.failed
         }
         
-        log("am_Variable *v\(variable.id) = am_newvariable(s\(id))")
+        if debug { log("am_Variable *v\(variable.id) = am_newvariable(s\(id))") }
         let underlying = am_newvariable(solver)!
         
         variableMap[Wrapper(variable)] = underlying
