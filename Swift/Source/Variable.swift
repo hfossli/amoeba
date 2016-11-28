@@ -6,7 +6,7 @@
 //
 //
 
-public class Variable: UniqueId {
+public final class Variable: UniqueId {
     
     private static var index: Int32 = 0
     public let id: Int = Int(OSAtomicIncrement32(&Variable.index))

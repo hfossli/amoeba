@@ -6,7 +6,7 @@
 //
 //
 
-public class Expression: UniqueId {
+public final class Expression: UniqueId {
     
     private static var index: Int32 = 0
     public let id: Int = Int(OSAtomicIncrement32(&Expression.index))

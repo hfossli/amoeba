@@ -6,7 +6,7 @@
 //
 //
 
-public class Term: UniqueId {
+public final class Term: UniqueId {
 
     public let variable: Variable
     public let multiplier: Double

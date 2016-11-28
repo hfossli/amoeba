@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal class Observer <T> {
+internal final class Observer <T> {
     
     private var index = 0
     internal var items: [Int : T] = [:]

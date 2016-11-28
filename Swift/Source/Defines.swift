@@ -6,11 +6,29 @@
 //
 //
 
-public class Strength {
+public final class Strength {
     public static let required: Double = 1000*1000*1000
     public static let strong: Double   = 1000*1000
     public static let medium: Double   = 1000
     public static let weak: Double     = 1
+    
+    internal static func underlyingConstantName(_ value: Double) -> String {
+        if value == Strength.required {
+            return "AM_REQUIRED"
+        }
+        if value == Strength.strong {
+            return "AM_STRONG"
+        }
+        if value == Strength.medium {
+            return "AM_MEDIUM"
+        }
+        if value == Strength.weak {
+            return "AM_WEAK"
+        }
+        else {
+            return String(value)
+        }
+    }
 }
 
 public enum AmoebaError: Error {
@@ -45,6 +63,17 @@ public enum Relation {
             return AM_EQUAL
         case .geq:
             return AM_GREATEQUAL
+        }
+    }
+    
+    internal func underlyingConstantName() -> String {
+        switch(self) {
+        case .leq:
+            return "AM_LESSEQUAL"
+        case .eq:
+            return "AM_EQUAL"
+        case .geq:
+            return "AM_GREATEQUAL"
         }
     }
 }

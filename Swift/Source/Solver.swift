@@ -17,7 +17,7 @@ public final class Solver {
     
     public init(debug: Bool = false) {
         self.debug = debug
-        self.actions = ["am_Solver *s\(id) = am_newsolver(nil, nil)"]
+        self.actions = ["am_Solver *s\(id) = am_newsolver(NULL, NULL)"]
         self.solver = am_newsolver(nil, nil)
     }
     
@@ -70,6 +70,10 @@ public final class Solver {
         try observer.remove(observerId)
     }
     
+    public func variablesAndValues() -> [Wrapper<Variable>:Double] {
+        return values
+    }
+    
     private func cacheAndCallObservers() {
         let changes = cacheValues()
         callObservers(changes: changes)
@@ -98,20 +102,10 @@ public final class Solver {
         }
     }
     
-    public func variablesAndValues() -> [Wrapper<Variable>:Double] {
-        return values
-    }
-    
     private func createConstraint(_ constraint: Constraint) -> am_ConstraintRef {
         
-        if debug { log("am_Constraint *c\(constraint.id) = am_newconstraint(s\(id), \(constraint.strength))") }
+        if debug { log("am_Constraint *c\(constraint.id) = am_newconstraint(s\(id), \(Strength.underlyingConstantName(constraint.strength)))") }
         let underlying = am_newconstraint(solver, constraint.strength)!
-        
-        if debug { log("am_setstrength(c\(constraint.id), \(constraint.strength))") }
-        am_setstrength(underlying, constraint.strength)
-        
-        if debug { log("am_setrelation(c\(constraint.id), \(constraint.relation.underlying()))") }
-        am_setrelation(underlying, constraint.relation.underlying())
         
         for term in constraint.expression.terms {
             let variable = try! self.underlying(variable: term.variable)
@@ -123,6 +117,10 @@ public final class Solver {
             if debug { log("am_addconstant(c\(constraint.id), \(constant))") }
             am_addconstant(underlying, constant)
         }
+        
+        if debug { log("am_setrelation(c\(constraint.id), \(constraint.relation.underlyingConstantName()))") }
+        am_setrelation(underlying, constraint.relation.underlying())
+        
         return underlying
     }
     
