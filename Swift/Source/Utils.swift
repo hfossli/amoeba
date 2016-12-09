@@ -13,9 +13,9 @@ public protocol UniqueId {
 
 public final class Wrapper<T: UniqueId> : Hashable, Equatable {
     
-    let item: T
+    public let item: T
     
-    init(_ item: T) {
+    public init(_ item: T) {
         self.item = item
     }
     

@@ -38,11 +38,41 @@ public final class Solver {
         }
     }
     
+    public func add(_ constraints: [Constraint]) throws {
+        var added: [Constraint] = []
+        do {
+            for constraint in constraints {
+                try add(constraint)
+                added.append(constraint)
+            }
+        } catch let error {
+            for constraint in added {
+                try remove(constraint)
+            }
+            throw error
+        }
+    }
+    
     public func remove(_ constraint: Constraint) throws {
         let underlying = self.underlying(constraint: constraint)
         if debug { log("am_remove(c\(constraint.id))") }
         am_remove(underlying)
         cacheAndCallObservers()
+    }
+    
+    public func remove(_ constraints: [Constraint]) throws {
+        var removed: [Constraint] = []
+        do {
+            for constraint in constraints {
+                try remove(constraint)
+                removed.append(constraint)
+            }
+        } catch let error {
+            for constraint in removed {
+                try add(constraint)
+            }
+            throw error
+        }
     }
     
     public func value(_ variable: Variable) throws -> Double {
