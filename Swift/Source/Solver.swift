@@ -81,6 +81,17 @@ public final class Solver {
         return am_value(underlying)
     }
     
+    public func value(_ expression: Expression) throws -> Double {
+        var result = 0.0
+        for term in expression.terms {
+            result += try value(term.variable) * term.multiplier
+        }
+        for constant in expression.constants {
+            result += constant
+        }
+        return result
+    }
+    
     public func observe(_ variable: Variable, _ closure: @escaping (Double) -> Void) -> Int {
         let key = Wrapper(variable)
         if let observer = observers[key] {
