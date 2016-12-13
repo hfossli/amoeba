@@ -107,6 +107,22 @@ public final class Expression: UniqueId {
         return Expression(terms: terms, constants: constants + constants)
     }
     
+    public func asVariable() -> Variable? {
+        guard constants.count == 0 else {
+            return nil
+        }
+        guard terms.count == 1 else {
+            return nil
+        }
+        guard let firstTerm = terms.first else {
+            return nil
+        }
+        guard firstTerm.multiplier == 1 else {
+            return nil
+        }
+        return firstTerm.variable
+    }
+    
     public func equals(_ other: Expression) -> Bool {
         
         if constants.count != other.constants.count {
